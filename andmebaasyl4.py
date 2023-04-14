@@ -1,6 +1,6 @@
-from tkinter import *
 import sqlite3
-
+from tkinter import *
+import ttkbootstrap as ttkbs
 lehekylg = 1 
 
 def loe_andmed(lehekylg, otsing):
@@ -66,7 +66,14 @@ def tuhjenda_sisendkastid():
 
 aken = Tk()
 aken.title('Andmete kuvamine')
-aken.geometry('900x800')
+
+ttkbs.Style().theme_use('solar')
+
+paned = ttkbs.Panedwindow(aken, orient=VERTICAL)
+paned.pack(fill=BOTH, expand=1)
+
+andmete_konteiner = ttkbs.Frame(paned, relief=SOLID, borderwidth=2)
+paned.add(andmete_konteiner, weight=1)
 
 loend = Listbox(aken, height=10, width=70)
 loend.pack(side=LEFT, fill=Y)
