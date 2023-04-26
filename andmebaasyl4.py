@@ -20,6 +20,7 @@ def kuvada_andmed():
     loend.delete(0, END)
     for rida in andmed:
         loend.insert(END, rida)
+    uuenda_sisestuste_arvu()
 
 def lehekylge_edasi():
     global lehekylg
@@ -27,6 +28,7 @@ def lehekylge_edasi():
     kuvada_andmed()
     sisestus.delete(0, END)
     sisestus.insert(0, lehekylg)
+    uuenda_sisestuste_arvu()
 
 def lehekylge_tagasi():
     global lehekylg
@@ -36,6 +38,7 @@ def lehekylge_tagasi():
     kuvada_andmed()
     sisestus.delete(0, END)
     sisestus.insert(0, lehekylg)
+    uuenda_sisestuste_arvu()
 
 def kustuta_rida():
     id = kustutus_sisestus.get()
@@ -45,6 +48,7 @@ def kustuta_rida():
     conn.commit()
     conn.close()
     kuvada_andmed()
+    uuenda_sisestuste_arvu()
 
 def lisa_andmed():
     conn = sqlite3.connect('epood_llaanesoo.db')
@@ -53,19 +57,18 @@ def lisa_andmed():
               (eesnimi_sisestus.get(), perenimi_sisestus.get(), email_sisestus.get(), automark_sisestus.get(), aasta_sisestus.get(), hind_sisestus.get()))
     conn.commit()
     conn.close()
-    tuhjenda_sisendkastid()
+    uuenda_sisestuste_arvu()
 
-def tuhjenda_sisendkastid():
-    eesnimi_sisestus.delete(0, END)
-    perenimi_sisestus.delete(0, END)
-    email_sisestus.delete(0, END)
-    automark_sisestus.delete(0, END)
-    aasta_sisestus.delete(0, END)
-    hind_sisestus.delete(0, END)
+def uuenda_sisestuste_arvu():
+    conn = sqlite3.connect('epood_llaanesoo.db')
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM sinukasutaja")
+    result = c.fetchone()
+    sisestuste_arv_silt.config(text="Sisestuste arv: " + str(result[0]))
 
 
 aken = Tk()
-aken.title('Andmete kuvamine')
+aken.title('Harjutus 4')
 
 ttkbs.Style().theme_use('solar')
 
@@ -110,6 +113,7 @@ kustuta_nupp = Button(sisestus_kont, text="Kustuta", command=kustuta_rida)
 kustuta_nupp.pack(side=LEFT)
 
 
+#lisamine
 eesnimi_silt = Label(aken, text="Eesnimi:")
 eesnimi_silt.pack()
 
@@ -150,6 +154,8 @@ lisa_nupp = Button(aken, text="Lisa andmed", command=lisa_andmed)
 lisa_nupp.pack()
 
 
+
+
 # nupud lehekülje muutmiseks
 tagasi_nupp = Button(aken, text="-", command=lehekylge_tagasi)
 tagasi_nupp.pack(side=LEFT)
@@ -162,6 +168,9 @@ edasi_nupp = Button(aken, text="+", command=lehekylge_edasi)
 edasi_nupp.pack(side=LEFT)
 otsingu_silt = Label(aken, text="Otsi nime järgi:")
 otsingu_silt.pack()
+
+sisestuste_arv_silt = Label(aken, text="Sisestuste arv: 0")
+sisestuste_arv_silt.pack()
 
 nupp = Button(aken, text="Kuva andmed", command=kuvada_andmed)
 nupp.pack()
